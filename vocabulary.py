@@ -52,12 +52,20 @@ class Vocabulary:
         """  If word is a known synonym, it is replaced with is normal-form """
         return word if word not in self.synonyms else self.synonyms[word]
 
-    def words_filter(self, words, filler='_', process_synonyms=True):
-        """ Replace words with chosen filler if not present in Vocabulary """
+    def words_filter(self, words, filler=None, process_synonyms=True):
+        """ Remove words with chosen filler if not present in Vocabulary.
+        :param filler: if specified, a filtered words is returned as value specified here
+        """
         if process_synonyms:
-            return [self.main_synonym(w) if self.main_synonym(w) in self._dictionary else filler for w in words]
+            if filler is not None:
+                return [self.main_synonym(w) if self.main_synonym(w) in self._dictionary else filler for w in words]
+            else:
+                return [self.main_synonym(w) for w in words if self.main_synonym(w) in self._dictionary]
         else:
-            return [w if w in self._dictionary else filler for w in words]
+            if filler is not None:
+                return [w if w in self._dictionary else filler for w in words]
+            else:
+                return [w for w in words if w in self._dictionary]
 
     def save(self, fname):
         # TODO fare un file con SOLO dati per ottimizzare lo spazio
